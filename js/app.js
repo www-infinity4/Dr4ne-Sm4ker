@@ -143,7 +143,7 @@ const App = (() => {
     drawGauge('gauge-radiation', r.radiation, 0, 0.5, '#f472b6');
 
     // Sparklines
-    drawChart('chart-telluric',  Sensor.getHistory('telluric'),  0,  60,  );
+    drawChart('chart-telluric',  Sensor.getHistory('telluric'),  0,  60);
     drawChart('chart-seismic',   Sensor.getHistory('seismic'),   0,  2   );
     drawChart('chart-em',        Sensor.getHistory('em'),        0,  150 );
     drawChart('chart-radiation', Sensor.getHistory('radiation'), 0,  0.5 );

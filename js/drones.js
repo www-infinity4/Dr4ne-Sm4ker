@@ -114,7 +114,8 @@ const Drones = (() => {
     lastAction = decision.action;
 
     if (decision.action === 'STANDBY') {
-      // Recall any drones not on critical missions
+      // Recall non-critical drones. RAD_RESPONSE drones are kept active because
+      // a radiation containment mission must complete before the drone can safely return.
       fleet.forEach(d => {
         if (d.state === 'ON_MISSION' && d.mission !== 'RAD_RESPONSE') {
           transitionDrone(d, 'RETURNING');
