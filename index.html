@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Infinity Autonomous Earth System — real-time AI-controlled environmental monitoring and drone dispatch dashboard." />
+  <title>INFINITY — Autonomous Earth System</title>
+
+  <!-- Favicon (inline SVG data-URI) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23080c14'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-size='20'>🛸</text></svg>" />
+
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<div class="app-wrapper">
+
+  <!-- ── Header ─────────────────────────────────────────────────── -->
+  <header class="header">
+    <div class="header__brand">
+      <div class="header__logo">🛸</div>
+      <div>
+        <div class="header__title">INFINITY SYS</div>
+        <div class="header__sub">Autonomous Earth System · v1.0</div>
+      </div>
+    </div>
+
+    <div class="header__meta">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div id="status-dot" class="status-dot status-dot--ok"></div>
+        <span id="alert-badge" class="badge badge--ok">NOMINAL</span>
+      </div>
+      <div class="header__clock">
+        <span id="last-updated">—</span>
+        &nbsp;·&nbsp;
+        <span id="tick-counter">Cycle #0</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Detection → Decision → Action flow ─────────────────────── -->
+  <section class="flow-section">
+    <div class="section-title">Signal Flow</div>
+    <div class="flow-row">
+
+      <div class="flow-box" id="flow-sensor">
+        <div class="flow-box__icon">🌍</div>
+        <div class="flow-box__label">Earth Sensors</div>
+        <div class="flow-box__val" id="flow-sensor-val">Initialising…</div>
+      </div>
+
+      <div class="flow-arrow">→</div>
+
+      <div class="flow-box" id="flow-ai">
+        <div class="flow-box__icon">🧠</div>
+        <div class="flow-box__label">AI Analysis</div>
+        <div class="flow-box__val" id="flow-ai-val">Initialising…</div>
+      </div>
+
+      <div class="flow-arrow">→</div>
+
+      <div class="flow-box" id="flow-action">
+        <div class="flow-box__icon">🚁</div>
+        <div class="flow-box__label">Fleet Action</div>
+        <div class="flow-box__val" id="flow-action-val">Initialising…</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Sensor readings ────────────────────────────────────────── -->
+  <section>
+    <div class="section-title">Earth Signal Layer</div>
+    <div class="sensor-grid">
+
+      <!-- Telluric -->
+      <div class="sensor-card">
+        <div class="sensor-card__top">
+          <div>
+            <div class="sensor-label">⚡ Telluric Current</div>
+            <div class="sensor-value" id="val-telluric" style="color:#818cf8">—</div>
+          </div>
+          <canvas id="gauge-telluric" class="gauge" width="80" height="52"></canvas>
+        </div>
+        <canvas id="chart-telluric" class="sparkline" width="300" height="48"></canvas>
+      </div>
+
+      <!-- Seismic -->
+      <div class="sensor-card">
+        <div class="sensor-card__top">
+          <div>
+            <div class="sensor-label">🌊 Seismic Activity</div>
+            <div class="sensor-value" id="val-seismic" style="color:#34d399">—</div>
+          </div>
+          <canvas id="gauge-seismic" class="gauge" width="80" height="52"></canvas>
+        </div>
+        <canvas id="chart-seismic" class="sparkline" width="300" height="48"></canvas>
+      </div>
+
+      <!-- EM Field -->
+      <div class="sensor-card">
+        <div class="sensor-card__top">
+          <div>
+            <div class="sensor-label">📡 EM Field</div>
+            <div class="sensor-value" id="val-em" style="color:#60a5fa">—</div>
+          </div>
+          <canvas id="gauge-em" class="gauge" width="80" height="52"></canvas>
+        </div>
+        <canvas id="chart-em" class="sparkline" width="300" height="48"></canvas>
+      </div>
+
+      <!-- Radiation -->
+      <div class="sensor-card">
+        <div class="sensor-card__top">
+          <div>
+            <div class="sensor-label">☢️ Radiation</div>
+            <div class="sensor-value" id="val-radiation" style="color:#f472b6">—</div>
+          </div>
+          <canvas id="gauge-radiation" class="gauge" width="80" height="52"></canvas>
+        </div>
+        <canvas id="chart-radiation" class="sparkline" width="300" height="48"></canvas>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── AI + Event log ─────────────────────────────────────────── -->
+  <div class="two-col">
+
+    <!-- AI Decision -->
+    <div class="card ai-panel">
+      <div class="section-title">AI Control Layer</div>
+      <div class="ai-action-row">
+        <span class="ai-action" id="ai-action">—</span>
+        <span class="ai-severity ai-severity--normal" id="ai-severity">NORMAL</span>
+      </div>
+      <div class="ai-message" id="ai-message">Waiting for sensor data…</div>
+      <div class="ai-detail"  id="ai-detail"></div>
+    </div>
+
+    <!-- Event Log -->
+    <div class="card">
+      <div class="section-title">Event Log</div>
+      <div class="event-log-wrap">
+        <ul id="event-log">
+          <li class="log-empty">No events yet…</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Drone Fleet ────────────────────────────────────────────── -->
+  <section class="drone-grid-wrap">
+    <div class="section-title">Drone Execution Layer</div>
+
+    <div class="drone-stats">
+      <div class="drone-stat drone-stat--active">
+        <div class="drone-stat__num" id="drone-active">—</div>
+        <div class="drone-stat__label">Active</div>
+      </div>
+      <div class="drone-stat drone-stat--mission">
+        <div class="drone-stat__num" id="drone-on-mission">—</div>
+        <div class="drone-stat__label">On Mission</div>
+      </div>
+      <div class="drone-stat drone-stat--idle">
+        <div class="drone-stat__num" id="drone-idle">—</div>
+        <div class="drone-stat__label">Idle</div>
+      </div>
+    </div>
+
+    <div id="drone-grid"></div>
+  </section>
+
+  <!-- ── Footer ─────────────────────────────────────────────────── -->
+  <footer class="footer">
+    INFINITY AUTONOMOUS EARTH SYSTEM · Zero-waste · AI-controlled · Minimal footprint
+    · Systems that serve then disappear.
+  </footer>
+
+</div><!-- /.app-wrapper -->
+
+<!-- Scripts (order matters: dependencies first) -->
+<script src="js/sensor.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/drones.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
